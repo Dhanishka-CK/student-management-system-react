@@ -15,4 +15,4 @@ RUN npm run build
 
 FROM scratch
 
-COPY --from=build /app/dist
+COPY --from=build /app/dist /
