@@ -1,42 +1,50 @@
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function Header() {
   return (
-    <header className="header">
-      <div className="header-content">
-        <div className="logo">SMS</div>
-        <div>
-          <h1>Student Management System</h1>
-          <p>Student Profile Management Portal</p>
-        </div>
-      </div>
+    <header>
+      <h1>Student Management System</h1>
     </header>
   );
 }
 
-function StudentProfile(props) {
+function StudentProfile({
+  name,
+  department,
+  year,
+  count,
+  onComplete,
+  onReset
+}) {
+  useEffect(() => {
+    const previousTitle = document.title;
+
+    document.title = `Practice Sessions: ${count}`;
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [count]);
+
   return (
     <div className="student-profile">
-      <div className="profile-top">
-        <div className="avatar">
-          {props.name.charAt(0)}
-        </div>
-        <div>
-          <h3>{props.name}</h3>
-          <span className="status">Active Student</span>
-        </div>
-      </div>
+      <h2>Student Profile</h2>
 
-      <div className="profile-details">
-        <div className="detail">
-          <span className="label">Department</span>
-          <span className="value">{props.department}</span>
-        </div>
+      <p><strong>Name:</strong> {name}</p>
+      <p><strong>Department:</strong> {department}</p>
+      <p><strong>Year:</strong> {year}</p>
 
-        <div className="detail">
-          <span className="label">Academic Year</span>
-          <span className="value">{props.year}</span>
-        </div>
+      <div className="practice-section">
+        <h3>Practice Sessions: {count}</h3>
+
+        <button onClick={onComplete}>
+          Complete Practice
+        </button>
+
+        <button onClick={onReset}>
+          Reset
+        </button>
       </div>
     </div>
   );
@@ -45,68 +53,54 @@ function StudentProfile(props) {
 function Footer() {
   return (
     <footer>
-      <p>© 2026 Student Management System</p>
-      <p>Built with React Components, JSX and Props</p>
+      © 2026 Student Management System
     </footer>
   );
 }
 
 function App() {
-  const student1 = {
+  const [count, setCount] = useState(0);
+  const [showProfile, setShowProfile] = useState(true);
+
+  const student = {
     name: "Anu",
     department: "CSE",
     year: "3rd Year"
   };
 
-  const student2 = {
-    name: "Bala",
-    department: "Computer Science",
-    year: "3rd Year"
+  const completePractice = () => {
+    setCount(count + 1);
+  };
+
+  const resetPractice = () => {
+    setCount(0);
   };
 
   return (
     <div className="app">
       <Header />
 
-      <main className="container">
-        <section className="welcome-section">
-          <div>
-            <span className="eyebrow">STUDENT DIRECTORY</span>
-            <h2>Student Profiles</h2>
-            <p>
-              View academic information of registered students.
-            </p>
-          </div>
+      <main>
+        <h2>Student Practice Tracker</h2>
 
-          <div className="student-count">
-            <strong>02</strong>
-            <span>Students</span>
-          </div>
-        </section>
-
-        <section className="profiles-section">
-          <div className="section-heading">
-            <h2>Student 1</h2>
-            <span>Profile</span>
-          </div>
-
+        {showProfile && (
           <StudentProfile
-            name={student1.name}
-            department={student1.department}
-            year={student1.year}
+            name={student.name}
+            department={student.department}
+            year={student.year}
+            count={count}
+            onComplete={completePractice}
+            onReset={resetPractice}
           />
+        )}
 
-          <div className="section-heading">
-            <h2>Student 2</h2>
-            <span>Profile</span>
-          </div>
-
-          <StudentProfile
-            name={student2.name}
-            department={student2.department}
-            year={student2.year}
-          />
-        </section>
+        <div className="toggle-section">
+          <button
+            onClick={() => setShowProfile(!showProfile)}
+          >
+            {showProfile ? "Hide Profile" : "Show Profile"}
+          </button>
+        </div>
       </main>
 
       <Footer />
